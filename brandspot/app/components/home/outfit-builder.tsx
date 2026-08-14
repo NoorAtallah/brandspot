@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -11,7 +10,7 @@ const FONT = `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@4
 const MAP = "data:image/svg+xml," + encodeURIComponent(
   `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='60'><defs><linearGradient id='r' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#000'/><stop offset='1' stop-color='#f00'/></linearGradient><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#000'/><stop offset='1' stop-color='#0f0'/></linearGradient></defs><rect width='100%' height='100%' fill='#000'/><rect width='100%' height='100%' fill='url(#r)'/><rect width='100%' height='100%' fill='url(#g)' style='mix-blend-mode:screen'/></svg>`);
 
-const glass = {
+const glass: React.CSSProperties = {
   backdropFilter: "url(#liquid-glass) blur(2px) saturate(140%) brightness(1.05)",
   WebkitBackdropFilter: "blur(10px) saturate(140%)",
   background: "rgba(255,255,255,0.12)",
@@ -27,7 +26,20 @@ const PATHS = {
   pants: "M30 22 L70 22 L67 52 L61 86 Q61 88 59 88 L53 88 Q51 88 51 86 L50 56 L49 86 Q49 88 47 88 L41 88 Q39 88 39 86 L33 52 Z",
 };
 
-function Garment({ type, color, size = 88 }: { type: keyof typeof PATHS; color: string; size?: number }) {
+type GarmentType = keyof typeof PATHS;
+type Lang = "ar" | "en";
+
+interface Item {
+  id: string;
+  g: GarmentType;
+  color: string;
+  brand: string;
+  price: number;
+  ar: string;
+  en: string;
+}
+
+function Garment({ type, color, size = 88 }: { type: GarmentType; color: string; size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true" style={{ filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.25))" }}>
       <path d={PATHS[type]} fill={color} />
@@ -38,25 +50,28 @@ function Garment({ type, color, size = 88 }: { type: keyof typeof PATHS; color: 
   );
 }
 
-const TOPS = [
+const TOPS: Item[] = [
   { id: "t1", g: "polo", color: "#9CC3E4", brand: "Zara Kids", price: 9.90, ar: "بولو قطن", en: "Piqué Polo" },
   { id: "t2", g: "dress", color: "#F3A9C0", brand: "H&M", price: 12.50, ar: "فستان كشكش", en: "Ruffle Dress" },
   { id: "t3", g: "cardigan", color: "#243154", brand: "GAP", price: 15.00, ar: "كارديجان تريكو", en: "Knit Cardigan" },
   { id: "t4", g: "polo", color: "#8E3346", brand: "Next", price: 8.75, ar: "بولو كلاسيك", en: "Classic Polo" },
 ];
-const BOTTOMS = [
+const BOTTOMS: Item[] = [
   { id: "b1", g: "skirt", color: "#2E2E2E", brand: "Zara Kids", price: 11.00, ar: "تنورة بليسيه", en: "Pleated Skirt" },
   { id: "b2", g: "pants", color: "#D9C7A3", brand: "Next", price: 12.50, ar: "بنطال تشينو", en: "Chino Pants" },
   { id: "b3", g: "skirt", color: "#C7A781", brand: "H&M", price: 9.00, ar: "تنورة سكيتر", en: "Skater Skirt" },
   { id: "b4", g: "pants", color: "#3A5B86", brand: "GAP", price: 13.00, ar: "جينز بوتكات", en: "Bootcut Jeans" },
 ];
 
-const COPY = {
+const COPY: Record<Lang, {
+  eyebrow: string; title: string; subtitle: string; total: string;
+  add: string; added: string; unit: string; toggle: string;
+}> = {
   ar: { eyebrow: "نسّق إطلالة", title: "ركّب الإطلالة المثالية", subtitle: "بدّل بين القطع العلوية والسفلية، ثم أضِف الطقم كاملاً للحقيبة.", total: "الإجمالي", add: "أضِف الطقم", added: "تمت الإضافة", unit: "د.أ", toggle: "EN" },
   en: { eyebrow: "Build a look", title: "Mix & match the perfect outfit", subtitle: "Swap the top and bottom, then add the whole set to your bag.", total: "Total", add: "Add outfit", added: "Added", unit: "JD", toggle: "عربي" },
 };
 
-function Chev({ onClick, Icon }) {
+function Chev({ onClick, Icon }: { onClick: () => void; Icon: LucideIcon }) {
   const reduce = useReducedMotion();
   return (
     <motion.button onClick={onClick} whileTap={reduce ? {} : { scale: 0.88 }} whileHover={reduce ? {} : { scale: 1.08 }}
@@ -66,7 +81,7 @@ function Chev({ onClick, Icon }) {
   );
 }
 
-function Peek({ item, side, top }) {
+function Peek({ item, side, top }: { item: Item; side: "start" | "end"; top: string }) {
   return (
     <div className="hidden md:flex absolute z-0 h-20 w-20 rounded-2xl items-center justify-center"
       style={{ ...glass, top, transform: "translateY(-50%)", [side === "start" ? "insetInlineStart" : "insetInlineEnd"]: "-88px", opacity: 0.55 }}>
@@ -75,7 +90,17 @@ function Peek({ item, side, top }) {
   );
 }
 
-function Row({ item, prev, next, onPrev, onNext, PrevIcon, NextIcon, lang, topPct }) {
+function Row({ item, prev, next, onPrev, onNext, PrevIcon, NextIcon, lang, topPct }: {
+  item: Item;
+  prev: Item;
+  next: Item;
+  onPrev: () => void;
+  onNext: () => void;
+  PrevIcon: LucideIcon;
+  NextIcon: LucideIcon;
+  lang: Lang;
+  topPct: string;
+}) {
   const reduce = useReducedMotion();
   return (
     <>
@@ -102,14 +127,18 @@ function Row({ item, prev, next, onPrev, onNext, PrevIcon, NextIcon, lang, topPc
   );
 }
 
-function OutfitBuilder({ lang }) {
+function OutfitBuilder({ lang }: { lang: Lang }) {
   const reduce = useReducedMotion();
   const isAr = lang === "ar";
   const c = COPY[lang];
   const [ti, setTi] = useState(0), [bi, setBi] = useState(0), [added, setAdded] = useState(false);
   const top = TOPS[ti], bottom = BOTTOMS[bi];
   const total = top.price + bottom.price;
-  const cyc = (set, len, d) => set((i) => (i + d + len) % len);
+  const cyc = (
+    set: React.Dispatch<React.SetStateAction<number>>,
+    len: number,
+    d: number
+  ) => set((i: number) => (i + d + len) % len);
   const PrevIcon = isAr ? ChevronRight : ChevronLeft;
   const NextIcon = isAr ? ChevronLeft : ChevronRight;
   const addToBag = () => { setAdded(true); setTimeout(() => setAdded(false), 1600); };
@@ -159,7 +188,7 @@ function OutfitBuilder({ lang }) {
 }
 
 export default function App() {
-  const [lang, setLang] = useState("ar");
+  const [lang, setLang] = useState<Lang>("ar");
   const dir = lang === "ar" ? "rtl" : "ltr";
   const font = lang === "ar" ? "'Tajawal', system-ui, sans-serif" : "'Inter', system-ui, sans-serif";
   return (
