@@ -4,51 +4,48 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 export type Lang = "ar" | "en";
 export type Dir = "rtl" | "ltr";
 
-type AgeItem = { label: string; hint: string };
+type DeptItem = { label: string; hint: string };
 type Dict = {
   eyebrow: string;
   title: { pre: string; accent: string; post: string };
   subtitle: string;
-  shopByAge: string;
-  ages: { baby: AgeItem; girls: AgeItem; boys: AgeItem };
+  shopBy: string;
+  depts: { women: DeptItem; men: DeptItem; kids: DeptItem };
   cta1: string;
   cta2: string;
-  nav: {
-    shop: string; wishlist: string; bag: string; account: string;
-    search: string; saved: string; you: string;
-  };
+  nav: { shop: string; brands: string; bag: string; search: string };
   toggle: string;
 };
 
 const DICT: Record<Lang, Dict> = {
   ar: {
-    eyebrow: "ماركات أطفال · الأردن",
-    title: { pre: "ملابس", accent: "مختارة", post: "لأصغر الصغار." },
-    subtitle: "ماركات أصلية من زارا و H&M وكارترز — مُختارة لكل عمر، وتوصَّل إلى أي مكان في الأردن.",
-    shopByAge: "تسوّق حسب العمر",
-    ages: {
-      baby: { label: "رُضّع", hint: "0–2 سنة" },
-      girls: { label: "بنات", hint: "2–8 سنوات" },
-      boys: { label: "أولاد", hint: "2–8 سنوات" },
+    eyebrow: "ماركات عالمية · الأردن",
+    title: { pre: "ماركات", accent: "أصلية", post: "للعائلة كلها." },
+    subtitle: "زارا و H&M و GAP و Next — للنساء والرجال والأطفال، مُختارة بعناية وتوصَّل إلى أي مكان في الأردن.",
+    shopBy: "تسوّق حسب القسم",
+    depts: {
+      women: { label: "نساء", hint: "وصل حديثاً" },
+      men: { label: "رجال", hint: "وصل حديثاً" },
+      kids: { label: "أطفال", hint: "0–8 سنوات" },
     },
     cta1: "تسوّق الجديد",
     cta2: "تصفّح الماركات",
-    nav: { shop: "تسوّق", wishlist: "المفضّلة", bag: "الحقيبة", account: "حسابي", search: "بحث", saved: "المحفوظة", you: "حسابي" },
+    nav: { shop: "تسوّق", brands: "الماركات", bag: "الحقيبة", search: "بحث" },
     toggle: "EN",
   },
   en: {
-    eyebrow: "Kids' brands · Jordan",
-    title: { pre: "Considered clothes for", accent: "little", post: "people." },
-    subtitle: "Original Zara, H&M & Carter's — hand-picked for every age and delivered anywhere in Jordan.",
-    shopByAge: "Shop by age",
-    ages: {
-      baby: { label: "Baby", hint: "0–2 yrs" },
-      girls: { label: "Girls", hint: "2–8 yrs" },
-      boys: { label: "Boys", hint: "2–8 yrs" },
+    eyebrow: "Original brands · Jordan",
+    title: { pre: "Original brands for", accent: "everyone", post: "you dress." },
+    subtitle: "Zara, H&M, GAP & Next — for women, men and kids, hand-picked and delivered anywhere in Jordan.",
+    shopBy: "Shop by department",
+    depts: {
+      women: { label: "Women", hint: "New in" },
+      men: { label: "Men", hint: "New in" },
+      kids: { label: "Kids", hint: "0–8 yrs" },
     },
     cta1: "Shop new arrivals",
     cta2: "Browse brands",
-    nav: { shop: "Shop", wishlist: "Wishlist", bag: "Bag", account: "Account", search: "Search", saved: "Saved", you: "You" },
+    nav: { shop: "Shop", brands: "Brands", bag: "Bag", search: "Search" },
     toggle: "عربي",
   },
 };
