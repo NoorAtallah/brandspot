@@ -47,7 +47,7 @@ export async function getNewArrivals(limit = 12): Promise<ProductRow[]> {
     .eq("active", true)
     .order("created_at", { ascending: false })
     .limit(limit);
-  return (data as ProductRow[] | null) ?? [];
+  return ((data ?? []) as unknown as ProductRow[]);
 }
 
 /** Live brands, each with a count of the live products behind it. */
@@ -60,7 +60,7 @@ export async function getBrands(): Promise<BrandRow[]> {
     .order("sort_order");
 
   type Raw = Omit<BrandRow, "product_count"> & { products: { count: number }[] };
-  return ((data as Raw[] | null) ?? []).map((b) => ({
+  return (((data ?? []) as unknown as Raw[])).map((b) => ({
     id: b.id, slug: b.slug, name: b.name, name_ar: b.name_ar,
     note_ar: b.note_ar, note_en: b.note_en,
     product_count: b.products?.[0]?.count ?? 0,
@@ -75,5 +75,5 @@ export async function getLooks(): Promise<LookRow[]> {
     .select("id, slug, title_ar, title_en, image_url, look_items(id, x, y, sort_order, products(id, name_ar, name_en, price, brands(name)))")
     .eq("active", true)
     .order("sort_order");
-  return (data as LookRow[] | null) ?? [];
+  return ((data ?? []) as unknown as LookRow[]);
 }

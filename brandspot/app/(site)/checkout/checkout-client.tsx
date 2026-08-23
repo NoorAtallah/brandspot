@@ -84,8 +84,9 @@ export default function CheckoutClient({ zones }: { zones: Zone[] }) {
       lines: lines.map((l) => ({ productId: l.productId, size: l.size, qty: l.qty })),
     });
 
-    if ("error" in res) {
-      setError(c.errors[res.error] ?? c.errors.insert_failed);
+    if ("error" in res && res.error) {
+      const key = res.error as keyof typeof c.errors;
+      setError(c.errors[key] ?? c.errors.insert_failed);
       setBusy(false);
       return;
     }

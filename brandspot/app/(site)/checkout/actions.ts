@@ -34,11 +34,16 @@ export async function placeOrder(payload: OrderPayload) {
 
   if (readErr) return { error: "lookup_failed" as const, detail: readErr.message };
 
+  // Without generated database types, Supabase types an embedded to-one
+  // relation as an array, so accept either shape and flatten it.
+  type Embedded<T> = T | T[] | null;
   type Row = {
     id: string; name_en: string; name_ar: string; price: number; stock: number; active: boolean;
-    brands: { name: string } | null; product_images: { url: string; sort_order: number }[];
+    brands: Embedded<{ name: string }>;
+    product_images: { url: string; sort_order: number }[];
   };
-  const byId = new Map((products as Row[] | null ?? []).map((p) => [p.id, p]));
+  const one = <T,>(v: Embedded<T>): T | null => (Array.isArray(v) ? v[0] ?? null : v);
+  const byId = new Map(((products ?? []) as unknown as Row[]).map((p) => [p.id, p]));
 
   const items = [];
   let subtotal = 0;
@@ -56,7 +61,7 @@ export async function placeOrder(payload: OrderPayload) {
     items.push({
       product_id: p.id,
       product_name: p.name_en,
-      brand_name: p.brands?.name ?? null,
+      brand_name: one(p.brands)?.name ?? null,
       size: line.size,
       unit_price: unit,
       quantity: qty,

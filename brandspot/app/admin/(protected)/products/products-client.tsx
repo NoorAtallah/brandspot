@@ -21,7 +21,7 @@ type Product = {
 
 const blank = {
   slug: "", name_ar: "", name_en: "", description_ar: "", description_en: "",
-  brand_id: "", category_id: "", dept: "women" as const, price: "", was_price: "", stock: "0", active: true,
+  brand_id: "", category_id: "", dept: "women" as Product["dept"], price: "", was_price: "", stock: "0", active: true,
 };
 
 const slugify = (s: string) =>
