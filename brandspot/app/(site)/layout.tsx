@@ -6,7 +6,7 @@ import CartDrawer from "../components/cart/cart-drawer";
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Nav tone="light" />
+      <Nav />
       {children}
       <Footer />
       <CartDrawer />

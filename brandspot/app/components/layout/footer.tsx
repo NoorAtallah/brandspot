@@ -13,11 +13,11 @@ const COLUMNS: Col[] = [
     ar: "تسوّق",
     en: "Shop",
     links: [
-      { href: "/women", ar: "نساء", en: "Women" },
-      { href: "/men", ar: "رجال", en: "Men" },
-      { href: "/kids", ar: "أطفال", en: "Kids" },
-      { href: "/new", ar: "وصل حديثاً", en: "New in" },
-      { href: "/sale", ar: "التخفيضات", en: "Sale" },
+      { href: "/shop?dept=women", ar: "نساء", en: "Women" },
+      { href: "/shop?dept=men", ar: "رجال", en: "Men" },
+      { href: "/shop?dept=kids", ar: "أطفال", en: "Kids" },
+      { href: "/shop?sort=new", ar: "وصل حديثاً", en: "New in" },
+      { href: "/shop?sale=1", ar: "التخفيضات", en: "Sale" },
     ],
   },
   {

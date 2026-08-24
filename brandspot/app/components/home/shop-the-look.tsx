@@ -62,7 +62,12 @@ export default function ShopTheLook({ looks }: { looks: LookRow[] }) {
   const nameOf = (p: Pin) => (isAr ? p.products!.name_ar : p.products!.name_en);
 
   const addLook = () => {
-    pins.forEach((pin) =>
+    pins.forEach((pin) => {
+      // A sized piece needs one chosen before checkout will take it, so the
+      // look defaults to its first in-stock size; the bag can be changed after.
+      const sizes = [...(pin.products!.product_variants ?? [])].sort((a, b) => a.sort_order - b.sort_order);
+      const size = sizes.find((v) => v.stock > 0)?.size ?? null;
+
       add({
         productId: pin.products!.id,
         slug: pin.products!.id,
@@ -71,9 +76,9 @@ export default function ShopTheLook({ looks }: { looks: LookRow[] }) {
         brand: pin.products!.brands?.name ?? null,
         price: Number(pin.products!.price),
         image: look?.image_url ?? null,
-        size: null,
-      })
-    );
+        size,
+      });
+    });
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   };

@@ -1,5 +1,7 @@
 'use client';
 import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, BadgeCheck } from "lucide-react";
 import { glassLight, CAMEL, INK } from "../../lib/glass";
@@ -62,7 +64,7 @@ export default function Brands({ brands }: { brands: BrandRow[] }) {
           {brands.map((b, i) => (
             <motion.a
               key={b.id}
-              href="#"
+              href={`/brands/${b.slug}`}
               initial={reduce ? undefined : { opacity: 0, y: 22 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
@@ -82,8 +84,24 @@ export default function Brands({ brands }: { brands: BrandRow[] }) {
               />
 
               <div className="relative flex items-start justify-between gap-3">
-                <span className="flex flex-col">
-                  <span className="text-[22px] font-extrabold leading-none md:text-[26px]" style={{ color: INK, letterSpacing: "-0.02em" }}>
+                <span className="flex min-w-0 flex-col">
+                  {/* the uploaded mark when there is one, the wordmark when there is not */}
+                  {b.logo_url ? (
+                    <span
+                      className="relative mb-2.5 flex h-14 w-28 items-center justify-center overflow-hidden rounded-xl"
+                      style={{ background: "rgba(255,255,255,0.9)", border: "1px solid rgba(20,20,20,0.06)" }}
+                    >
+                      <Image
+                        src={b.logo_url}
+                        alt={b.name}
+                        fill
+                        sizes="112px"
+                        className="object-contain p-2"
+                      />
+                    </span>
+                  ) : null}
+
+                  <span className="truncate text-[22px] font-extrabold leading-none md:text-[26px]" style={{ color: INK, letterSpacing: "-0.02em" }}>
                     {b.name}
                   </span>
                   {isAr && b.name_ar ? (
@@ -130,7 +148,7 @@ export default function Brands({ brands }: { brands: BrandRow[] }) {
             className="rounded-full px-6 py-3 text-[13px] font-extrabold"
             style={{ background: INK, color: "#fff", boxShadow: "0 12px 26px -14px rgba(20,20,20,0.9)" }}
           >
-            {c.all}
+            <Link href="/brands">{c.all}</Link>
           </motion.button>
         </motion.div>
       </div>

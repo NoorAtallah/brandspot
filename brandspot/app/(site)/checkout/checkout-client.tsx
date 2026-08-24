@@ -25,6 +25,7 @@ const COPY = {
       empty_cart: "حقيبتك فاضية.",
       unavailable: "إحدى القطع لم تعد متوفرة.",
       out_of_stock: "الكمية المطلوبة غير متوفرة.",
+      size_required: "يرجى اختيار المقاس أو العمر لكل قطعة.",
       lookup_failed: "تعذّر التحقق من الطلب، حاول مرة أخرى.",
       insert_failed: "تعذّر حفظ الطلب، حاول مرة أخرى.",
     },
@@ -41,6 +42,7 @@ const COPY = {
       empty_cart: "Your bag is empty.",
       unavailable: "One of the pieces is no longer available.",
       out_of_stock: "We do not have that many in stock.",
+      size_required: "Please choose a size or age for every piece.",
       lookup_failed: "We could not verify the order — try again.",
       insert_failed: "We could not save the order — try again.",
     },
@@ -199,6 +201,7 @@ export default function CheckoutClient({ zones }: { zones: Zone[] }) {
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[13.5px] font-bold" style={{ color: INK }}>{isAr ? l.name_ar : l.name_en}</span>
                   {l.brand ? <span className="block text-[11px] font-extrabold" style={{ color: CAMEL }}>{l.brand}</span> : null}
+                  {l.size ? <span className="block text-[11px] font-bold" style={{ color: "rgba(20,20,20,0.6)" }}>{l.size}</span> : null}
                 </span>
                 <span className="text-[13.5px] font-extrabold" style={{ color: INK }}>{(l.price * l.qty).toFixed(2)}</span>
               </li>

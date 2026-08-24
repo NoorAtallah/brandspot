@@ -1,11 +1,12 @@
 'use client';
 import * as React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
 import { glassLight, CAMEL, INK } from "../../lib/glass";
 import { useLang } from "../../lib/i18n";
-import AddToCart from "../cart/add-to-cart";
+import ProductActions from "../cart/product-actions";
 
 import type { ProductRow } from "../../lib/queries";
 
@@ -71,7 +72,7 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
     <section className="relative w-full py-20">
       <div className="mx-auto max-w-6xl px-5">
         {/* ── header row ── */}
-        <div className="flex flex-wrap items-end justify-between gap-5">
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <motion.div
             initial={reduce ? undefined : { opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -92,7 +93,7 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
             </p>
           </motion.div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <button
               onClick={() => scrollByCard(-1)}
               aria-label="previous"
@@ -155,8 +156,9 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
             transition={{ duration: 0.5, ease, delay: Math.min(i * 0.05, 0.3) }}
             className="group relative w-[258px] shrink-0 snap-start md:w-[288px]"
           >
-            <div
-              className="relative aspect-[3/4] overflow-hidden rounded-[26px]"
+            <Link
+              href={`/product/${p.slug}`}
+              className="relative block aspect-[3/4] overflow-hidden rounded-[26px]"
               style={{ border: "1px solid rgba(20,20,20,0.06)", boxShadow: "0 22px 44px -28px rgba(20,20,20,0.65)" }}
             >
               {cover(p) ? (
@@ -204,11 +206,13 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
                   ) : null}
                 </span>
               </div>
-            </div>
+            </Link>
 
             <div className="mt-3 flex justify-center">
-              <AddToCart
+              <ProductActions
+                dept={p.dept}
                 stock={p.stock}
+                variants={p.product_variants ?? []}
                 line={{
                   productId: p.id,
                   slug: p.slug,
@@ -217,23 +221,21 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
                   brand: p.brands?.name ?? null,
                   price: Number(p.price),
                   image: cover(p),
-                  size: null,
                 }}
-                compact
               />
             </div>
           </motion.article>
         ))}
 
         {shown.length ? (
-          <a
-            href="#"
+          <Link
+            href="/shop"
             className="flex w-[258px] shrink-0 snap-start flex-col items-center justify-center gap-2 rounded-[26px] text-[14px] font-bold md:w-[288px]"
             style={{ ...glassLight, color: INK, aspectRatio: "3 / 4" }}
           >
             <ArrowUpRight size={22} style={{ color: CAMEL, transform: isAr ? "scaleX(-1)" : "none" }} />
             {c.viewAll}
-          </a>
+          </Link>
         ) : (
           <p className="py-16 text-[14px] font-bold" style={{ color: "rgba(20,20,20,0.7)" }}>
             {c.empty}

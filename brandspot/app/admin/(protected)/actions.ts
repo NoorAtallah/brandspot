@@ -19,7 +19,7 @@ const PATHS: Record<string, string[]> = {
   looks: ["/admin/looks", "/"],
   look_items: ["/admin/looks", "/"],
   product_images: ["/admin/products", "/"],
-  product_variants: ["/admin/products"],
+  product_variants: ["/admin/products", "/"],
   orders: ["/admin/orders"],
 };
 
@@ -59,6 +59,23 @@ export async function setProductImages(productId: string, urls: string[]) {
     const { error } = await db
       .from("product_images")
       .insert(urls.map((url, i) => ({ product_id: productId, url, sort_order: i })));
+    if (error) return { error: error.message };
+  }
+  bust("products");
+  return {};
+}
+
+/** Replaces a product's sizes (ages, for kids) in one shot. */
+export async function setProductVariants(
+  productId: string,
+  rows: { size: string; stock: number }[]
+) {
+  const db = await guard();
+  await db.from("product_variants").delete().eq("product_id", productId);
+  if (rows.length) {
+    const { error } = await db.from("product_variants").insert(
+      rows.map((r, i) => ({ product_id: productId, size: r.size, stock: r.stock, sort_order: i }))
+    );
     if (error) return { error: error.message };
   }
   bust("products");

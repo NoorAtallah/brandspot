@@ -5,10 +5,19 @@ import { useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { PageHeader, Panel, Button, Field, Input, Textarea, Select, Toggle, Drawer, Empty, TableWrap, muted } from "../../ui";
 import { Uploader } from "../uploader";
-import { createRow, updateRow, deleteRow, setProductImages } from "../actions";
+import { createRow, updateRow, deleteRow, setProductImages, setProductVariants } from "../actions";
 import { CAMEL, INK } from "../../../lib/glass";
 
 type Img = { url: string; sort_order: number };
+type Variant = { id: string; size: string; stock: number; sort_order: number };
+type Row = { size: string; stock: number };
+
+/* Adults get sizes, kids get ages — same table, different vocabulary. */
+const SIZE_PRESETS: Record<"women" | "men" | "kids", string[]> = {
+  women: ["XS", "S", "M", "L", "XL", "XXL"],
+  men: ["S", "M", "L", "XL", "XXL"],
+  kids: ["0-3M", "3-6M", "6-12M", "1-2Y", "2-3Y", "3-4Y", "4-5Y", "5-6Y", "6-7Y", "7-8Y"],
+};
 type Product = {
   id: string; slug: string; name_ar: string; name_en: string;
   description_ar: string | null; description_en: string | null;
@@ -17,6 +26,7 @@ type Product = {
   brands: { name: string } | null;
   categories: { name_en: string } | null;
   product_images: Img[];
+  product_variants: Variant[];
 };
 
 const blank = {
@@ -39,6 +49,7 @@ export default function ProductsClient({
   const [editing, setEditing] = React.useState<Product | null>(null);
   const [form, setForm] = React.useState({ ...blank });
   const [images, setImages] = React.useState<string[]>([]);
+  const [variants, setVariants] = React.useState<Row[]>([]);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -48,6 +59,7 @@ export default function ProductsClient({
     setEditing(null);
     setForm({ ...blank });
     setImages([]);
+    setVariants([]);
     setError(null);
     setOpen(true);
   };
@@ -62,6 +74,11 @@ export default function ProductsClient({
       stock: String(p.stock), active: p.active,
     });
     setImages([...p.product_images].sort((a, b) => a.sort_order - b.sort_order).map((i) => i.url));
+    setVariants(
+      [...(p.product_variants ?? [])]
+        .sort((a, b) => a.sort_order - b.sort_order)
+        .map((v) => ({ size: v.size, stock: v.stock }))
+    );
     setError(null);
     setOpen(true);
   };
@@ -81,7 +98,7 @@ export default function ProductsClient({
       dept: form.dept,
       price: Number(form.price || 0),
       was_price: form.was_price ? Number(form.was_price) : null,
-      stock: Number(form.stock || 0),
+      stock: variants.length ? variants.reduce((n, v) => n + v.stock, 0) : Number(form.stock || 0),
       active: form.active,
     };
 
@@ -98,6 +115,9 @@ export default function ProductsClient({
     const id = editing ? editing.id : (res as { id: string }).id;
     const imgRes = await setProductImages(id, images);
     if (imgRes.error) setError(imgRes.error);
+
+    const varRes = await setProductVariants(id, variants);
+    if (varRes.error) setError(varRes.error);
 
     setBusy(false);
     setOpen(false);
@@ -222,7 +242,57 @@ export default function ProductsClient({
             <Field label="Was (JD)"><Input type="number" step="0.01" value={form.was_price} onChange={(e) => set("was_price", e.target.value)} /></Field>
           </div>
 
-          <Field label="Stock"><Input type="number" value={form.stock} onChange={(e) => set("stock", e.target.value)} /></Field>
+          <Field label={form.dept === "kids" ? "Ages" : "Sizes"}>
+            <div className="flex flex-col gap-2.5">
+              <div className="flex flex-wrap gap-1.5">
+                {SIZE_PRESETS[form.dept].map((size) => {
+                  const on = variants.some((v) => v.size === size);
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() =>
+                        setVariants((prev) =>
+                          on ? prev.filter((v) => v.size !== size) : [...prev, { size, stock: 0 }]
+                        )
+                      }
+                      className="rounded-full px-3 py-1.5 text-[12px] font-extrabold"
+                      style={{ background: on ? CAMEL : "rgba(20,20,20,0.07)", color: INK }}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {variants.length ? (
+                <ul className="flex flex-col gap-1.5">
+                  {variants.map((v, i) => (
+                    <li key={v.size} className="flex items-center gap-2">
+                      <span className="w-16 text-[13px] font-extrabold" style={{ color: INK }}>{v.size}</span>
+                      <Input
+                        type="number"
+                        value={String(v.stock)}
+                        onChange={(e) =>
+                          setVariants((prev) =>
+                            prev.map((x, xi) => (xi === i ? { ...x, stock: Number(e.target.value || 0) } : x))
+                          )
+                        }
+                      />
+                      <span className="text-[11px] font-bold" style={{ color: muted }}>in stock</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <>
+                  <p className="text-[12px] font-bold" style={{ color: muted }}>
+                    No {form.dept === "kids" ? "ages" : "sizes"} picked — the piece sells as one option.
+                  </p>
+                  <Input type="number" value={form.stock} onChange={(e) => set("stock", e.target.value)} placeholder="Stock" />
+                </>
+              )}
+            </div>
+          </Field>
 
           <Field label="Description (EN)"><Textarea value={form.description_en} onChange={(e) => set("description_en", e.target.value)} /></Field>
           <Field label="Description (AR)"><Textarea value={form.description_ar} onChange={(e) => set("description_ar", e.target.value)} dir="rtl" /></Field>

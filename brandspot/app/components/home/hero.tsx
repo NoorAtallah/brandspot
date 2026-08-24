@@ -1,4 +1,5 @@
 'use client';
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { HeroCarousel, type HeroCarouselItem } from "../ui/hero-carousel";
@@ -36,27 +37,28 @@ export default function Hero() {
   const actions = (
     <>
       {deptKeys.map((k) => (
-        <motion.button
-          key={k}
-          whileHover={reduce ? {} : { y: -2 }}
-          whileTap={reduce ? {} : { scale: 0.96 }}
+        <motion.div key={k} whileHover={reduce ? {} : { y: -2 }} whileTap={reduce ? {} : { scale: 0.96 }}>
+        <Link
+          href={`/shop?dept=${k}`}
           className="flex items-center gap-2 rounded-full px-4 py-2.5 text-[13px] font-bold text-white"
           style={glass}
         >
           {t.depts[k].label}
           <span className="text-[10px] font-bold text-white/90">{t.depts[k].hint}</span>
           <ArrowUpRight size={14} style={{ color: CAMEL, transform: isAr ? "scaleX(-1)" : "none" }} />
-        </motion.button>
+        </Link>
+        </motion.div>
       ))}
 
-      <motion.button
-        whileHover={reduce ? {} : { y: -2 }}
-        whileTap={reduce ? {} : { scale: 0.96 }}
-        className="rounded-full px-5 py-2.5 text-[13px] font-extrabold"
-        style={{ background: PAPER, color: INK, boxShadow: "0 12px 28px -14px rgba(0,0,0,0.9)" }}
-      >
-        {t.cta1}
-      </motion.button>
+      <motion.div whileHover={reduce ? {} : { y: -2 }} whileTap={reduce ? {} : { scale: 0.96 }}>
+        <Link
+          href="/shop"
+          className="inline-flex rounded-full px-5 py-2.5 text-[13px] font-extrabold"
+          style={{ background: PAPER, color: INK, boxShadow: "0 12px 28px -14px rgba(0,0,0,0.9)" }}
+        >
+          {t.cta1}
+        </Link>
+      </motion.div>
     </>
   );
 
