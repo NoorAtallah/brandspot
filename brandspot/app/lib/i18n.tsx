@@ -26,7 +26,7 @@ const DICT: Record<Lang, Dict> = {
     depts: {
       women: { label: "نساء", hint: "وصل حديثاً" },
       men: { label: "رجال", hint: "وصل حديثاً" },
-      kids: { label: "أطفال", hint: "0–8 سنوات" },
+      kids: { label: "أطفال", hint: "0–15 سنة" },
     },
     cta1: "تسوّق الجديد",
     cta2: "تصفّح الماركات",
@@ -41,7 +41,7 @@ const DICT: Record<Lang, Dict> = {
     depts: {
       women: { label: "Women", hint: "New in" },
       men: { label: "Men", hint: "New in" },
-      kids: { label: "Kids", hint: "0–8 yrs" },
+      kids: { label: "Kids", hint: "0–15 yrs" },
     },
     cta1: "Shop new arrivals",
     cta2: "Browse brands",

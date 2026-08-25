@@ -11,12 +11,12 @@ const U = (id: string) => `https://images.unsplash.com/${id}?q=80&w=1600&auto=fo
 /* accent = the hue the whole backdrop grades to when this card takes focus.
    Kept inside the camel/clay/ink family so the brand holds across the swing. */
 const LOOKS: { image: string; accent: string; ar: string; en: string; credit: { ar: string; en: string } }[] = [
-  { image: U("photo-1598554747436-c9293d6a588f"), accent: "#C7A781", ar: "الجديد\nللنساء", en: "New in\nWomen", credit: { ar: "زارا", en: "ZARA" } },
-  { image: U("photo-1582552938357-32b906df40cb"), accent: "#7c6244", ar: "أساسيات\nالرجال", en: "Men's\nEssentials", credit: { ar: "H&M", en: "H&M" } },
-  { image: U("photo-1519238263530-99bdd11df2ea"), accent: "#9c7e56", ar: "إطلالات\nالأطفال", en: "Kids'\nLooks", credit: { ar: "GAP", en: "GAP" } },
-  { image: U("photo-1560506840-ec148e82a604"), accent: "#b08968", ar: "فساتين\nالموسم", en: "Dresses\nof the Season", credit: { ar: "نكست", en: "NEXT" } },
-  { image: U("photo-1541099649105-f69ad21f3246"), accent: "#5d5346", ar: "دينم\nلكل يوم", en: "Denim\nEvery Day", credit: { ar: "ليفايس", en: "LEVI'S" } },
-  { image: U("photo-1566454544259-f4b94c3d758c"), accent: "#8a7a63", ar: "الماركات\nكاملة", en: "All the\nBrands", credit: { ar: "براند سبوت", en: "BRAND.SPOT" } },
+  { image: "/1.jpeg",   accent: "#C7A781", ar: "الجديد\nللنساء",   en: "New in\nWomen",          credit: { ar: "Eligo",       en: "{Eligo}" } },
+  { image: "/2.jpeg",     accent: "#7c6244", ar: "أساسيات\nالرجال",  en: "Men's\nEssentials",      credit: { ar: "Kappa",        en: "Kappa" } },
+  { image: "/3.jpeg",    accent: "#9c7e56", ar: "إطلالات\nالأطفال", en: "Kids'\nLooks",           credit: { ar: "Giggles",        en: "Giggles" } },
+  { image: "/4.jpeg", accent: "#b08968", ar: "فساتين\nالموسم",   en: "Dresses\nof the Season", credit: { ar: "Lee cooper",       en: "Lee cooper" } },
+  { image: "/5.jpeg",   accent: "#5d5346", ar: "دينم\nلكل يوم",    en: "Denim\nEvery Day",       credit: { ar: "Lee cooper",     en: "Lee cooper" } },
+  { image: "/6.jpeg",  accent: "#8a7a63", ar: "الماركات\nكاملة",  en: "All the\nBrands",        credit: { ar: "Eligo", en: "Eligo" } },
 ];
 
 const deptKeys = ["women", "men", "kids"] as const;

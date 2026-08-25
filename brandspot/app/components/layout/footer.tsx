@@ -1,11 +1,14 @@
 'use client';
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { Camera, Phone, MapPin, Wallet, Truck, ArrowUpRight } from "lucide-react";
+import { Camera, MessageCircle, MapPin, Wallet, Truck, ArrowUpRight } from "lucide-react";
 import { glassLight, CAMEL, INK } from "../../lib/glass";
 import { useLang } from "../../lib/i18n";
 
 type Col = { id: string; ar: string; en: string; links: { href: string; ar: string; en: string }[] };
+
+/** Shape the footer needs from a brand row — the layout passes these down. */
+export type FooterBrand = { slug: string; name: string; name_ar: string | null };
 
 const COLUMNS: Col[] = [
   {
@@ -20,30 +23,6 @@ const COLUMNS: Col[] = [
       { href: "/shop?sale=1", ar: "التخفيضات", en: "Sale" },
     ],
   },
-  {
-    id: "brands",
-    ar: "الماركات",
-    en: "Brands",
-    links: [
-      { href: "/brands/zara", ar: "زارا", en: "Zara" },
-      { href: "/brands/hm", ar: "إتش آند إم", en: "H&M" },
-      { href: "/brands/gap", ar: "غاب", en: "GAP" },
-      { href: "/brands/next", ar: "نكست", en: "Next" },
-      { href: "/brands", ar: "كل الماركات", en: "All brands" },
-    ],
-  },
-  {
-    id: "help",
-    ar: "المساعدة",
-    en: "Help",
-    links: [
-      { href: "/shipping", ar: "التوصيل", en: "Delivery" },
-      { href: "/returns", ar: "الإرجاع والاستبدال", en: "Returns & exchanges" },
-      { href: "/sizes", ar: "دليل المقاسات", en: "Size guide" },
-      { href: "/track", ar: "تتبّع طلبك", en: "Track your order" },
-      { href: "/contact", ar: "تواصل معنا", en: "Contact us" },
-    ],
-  },
 ];
 
 const COPY = {
@@ -51,7 +30,7 @@ const COPY = {
     blurb: "ماركات عالمية أصلية، تُطلب أونلاين وتوصل لباب بيتك في كل الأردن — والدفع عند الاستلام.",
     cod: "الدفع عند الاستلام",
     delivery: "توصيل لكل الأردن",
-    phone: "٠٧٩ ١٢٣ ٤٥٦٧",
+    phone: "٠٧٧ ١٢٢ ٢١٣٤",
     city: "عمّان، الأردن",
     rights: "جميع الحقوق محفوظة",
     terms: "الشروط والأحكام",
@@ -62,7 +41,7 @@ const COPY = {
     blurb: "Original global brands, ordered online and delivered to your door anywhere in Jordan — pay when it arrives.",
     cod: "Cash on delivery",
     delivery: "Delivery across Jordan",
-    phone: "079 123 4567",
+    phone: "077 122 2134",
     city: "Amman, Jordan",
     rights: "All rights reserved",
     terms: "Terms & conditions",
@@ -73,11 +52,29 @@ const COPY = {
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export default function Footer() {
+export default function Footer({ brands = [] }: { brands?: FooterBrand[] }) {
   const { lang, isAr } = useLang();
   const reduce = useReducedMotion();
   const c = COPY[lang];
   const year = 2026;
+
+  // Brands come from the database, so the column tracks whatever is live.
+  const brandsCol: Col = {
+    id: "brands",
+    ar: "الماركات",
+    en: "Brands",
+    links: [
+      ...brands.slice(0, 4).map((b) => ({
+        href: `/brands/${b.slug}`,
+        ar: b.name_ar ?? b.name,
+        en: b.name,
+      })),
+      { href: "/brands", ar: "كل الماركات", en: "All brands" },
+    ],
+  };
+
+  // shop · brands
+  const columns: Col[] = [COLUMNS[0], brandsCol];
 
   return (
     <footer className="relative mt-auto w-full px-5 pb-24 pt-10 md:pb-10">
@@ -89,7 +86,7 @@ export default function Footer() {
         className="mx-auto max-w-6xl overflow-hidden rounded-[30px] p-7 md:p-10"
         style={glassLight}
       >
-        <div className="grid gap-9 md:grid-cols-[1.3fr_1fr_1fr_1fr] md:gap-8">
+        <div className="grid gap-9 md:grid-cols-[1.6fr_1fr_1fr] md:gap-8">
           {/* brand block */}
           <div>
             <Link href="/" className="flex items-center gap-1.5">
@@ -120,7 +117,7 @@ export default function Footer() {
           </div>
 
           {/* link columns */}
-          {COLUMNS.map((col) => (
+          {columns.map((col) => (
             <nav key={col.id} aria-label={col[lang]}>
               <h3
                 className="text-[11px] font-extrabold"
@@ -154,8 +151,15 @@ export default function Footer() {
 
         {/* contact + social */}
         <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t pt-6" style={{ borderColor: "rgba(20,20,20,0.08)" }}>
-          <a href="tel:+962791234567" className="flex items-center gap-2 text-[13.5px] font-bold" style={{ color: INK }} dir="ltr">
-            <Phone size={16} strokeWidth={2.3} style={{ color: CAMEL }} />
+          <a
+            href="https://wa.me/962771222134"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 text-[13.5px] font-bold"
+            style={{ color: INK }}
+            dir="ltr"
+          >
+            <MessageCircle size={16} strokeWidth={2.3} style={{ color: CAMEL }} />
             {c.phone}
           </a>
           <span className="flex items-center gap-2 text-[13.5px] font-bold" style={{ color: "rgba(20,20,20,0.78)" }}>
@@ -164,7 +168,7 @@ export default function Footer() {
           </span>
 
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/brans.spot/"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-2 rounded-full px-4 py-2 text-[12.5px] font-extrabold"
