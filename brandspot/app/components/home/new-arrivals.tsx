@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,7 +14,7 @@ const COPY = {
   ar: {
     eyebrow: "وصل حديثاً",
     title: "أحدث القطع في براند سبوت",
-    subtitle: "قطع أصلية تُضاف أسبوعياً من زارا و H&M و GAP و Next.",
+    subtitle: "قطع أصلية تُضاف أسبوعياً .",
     all: "الكل",
     women: "نساء",
     men: "رجال",
@@ -50,11 +50,13 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
   const railRef = React.useRef<HTMLDivElement>(null);
   const [filter, setFilter] = React.useState<(typeof filters)[number]>("all");
 
-  const shown = filter === "all" ? products : products.filter((p) => p.dept === filter);
+  const shown =
+    filter === "all" ? products : products.filter((p) => p.dept === filter);
 
   // sort_order 0 is the card image the admin picked
   const cover = (p: ProductRow) =>
-    [...p.product_images].sort((a, b) => a.sort_order - b.sort_order)[0]?.url ?? null;
+    [...p.product_images].sort((a, b) => a.sort_order - b.sort_order)[0]?.url ??
+    null;
 
   // One card + gap. In RTL, scrollLeft runs negative, so the sign flips.
   const scrollByCard = (dir: -1 | 1) => {
@@ -62,7 +64,10 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
     if (!rail) return;
     const card = rail.querySelector<HTMLElement>("[data-card]");
     const amount = (card?.offsetWidth ?? 260) + 16;
-    rail.scrollBy({ left: amount * dir * (isAr ? -1 : 1), behavior: reduce ? "auto" : "smooth" });
+    rail.scrollBy({
+      left: amount * dir * (isAr ? -1 : 1),
+      behavior: reduce ? "auto" : "smooth",
+    });
   };
 
   const PrevIcon = isAr ? ChevronRight : ChevronLeft;
@@ -81,14 +86,24 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
           >
             <p
               className="text-[11px] font-bold"
-              style={{ color: CAMEL, letterSpacing: isAr ? "0.03em" : "0.18em", textTransform: isAr ? "none" : "uppercase" }}
+              style={{
+                color: CAMEL,
+                letterSpacing: isAr ? "0.03em" : "0.18em",
+                textTransform: isAr ? "none" : "uppercase",
+              }}
             >
               {c.eyebrow}
             </p>
-            <h2 className="mt-2 text-3xl font-extrabold md:text-4xl" style={{ color: INK, letterSpacing: isAr ? "0" : "-0.025em" }}>
+            <h2
+              className="mt-2 text-3xl font-extrabold md:text-4xl"
+              style={{ color: INK, letterSpacing: isAr ? "0" : "-0.025em" }}
+            >
               {c.title}
             </h2>
-            <p className="mt-2.5 max-w-lg text-[15px] leading-relaxed" style={{ color: "rgba(20,20,20,0.75)" }}>
+            <p
+              className="mt-2.5 max-w-lg text-[15px] leading-relaxed"
+              style={{ color: "rgba(20,20,20,0.75)" }}
+            >
               {c.subtitle}
             </p>
           </motion.div>
@@ -127,7 +142,11 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
                   layoutId="arrivals-filter"
                   className="absolute inset-0 rounded-full"
                   style={{ background: CAMEL }}
-                  transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }}
+                  transition={
+                    reduce
+                      ? { duration: 0 }
+                      : { type: "spring", stiffness: 380, damping: 32 }
+                  }
                 />
               ) : null}
               <span className="relative">{c[f]}</span>
@@ -143,7 +162,11 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
         style={{ scrollPaddingInline: "1.25rem" }}
       >
         {/* keeps the first card aligned with the max-w-6xl grid above */}
-        <div aria-hidden className="shrink-0" style={{ width: "max(0px, calc((100vw - 72rem) / 2 - 1.25rem))" }} />
+        <div
+          aria-hidden
+          className="shrink-0"
+          style={{ width: "max(0px, calc((100vw - 72rem) / 2 - 1.25rem))" }}
+        />
 
         {shown.map((p, i) => (
           <motion.article
@@ -159,7 +182,10 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
             <Link
               href={`/product/${p.slug}`}
               className="relative block aspect-[3/4] overflow-hidden rounded-[26px]"
-              style={{ border: "1px solid rgba(20,20,20,0.06)", boxShadow: "0 22px 44px -28px rgba(20,20,20,0.65)" }}
+              style={{
+                border: "1px solid rgba(20,20,20,0.06)",
+                boxShadow: "0 22px 44px -28px rgba(20,20,20,0.65)",
+              }}
             >
               {cover(p) ? (
                 <Image
@@ -170,19 +196,28 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
                 />
               ) : (
-                <span className="absolute inset-0" style={{ background: "rgba(20,20,20,0.06)" }} />
+                <span
+                  className="absolute inset-0"
+                  style={{ background: "rgba(20,20,20,0.06)" }}
+                />
               )}
 
               {p.was_price ? (
                 <span
                   className="absolute top-3 rounded-full px-2.5 py-1 text-[10px] font-extrabold"
-                  style={{ insetInlineStart: "0.75rem", background: CAMEL, color: INK }}
+                  style={{
+                    insetInlineStart: "0.75rem",
+                    background: CAMEL,
+                    color: INK,
+                  }}
                 >
-                  -{Math.round((1 - Number(p.price) / Number(p.was_price)) * 100)}%
+                  -
+                  {Math.round(
+                    (1 - Number(p.price) / Number(p.was_price)) * 100,
+                  )}
+                  %
                 </span>
               ) : null}
-
-
 
               {/* glass price plate, refracting the photo behind it */}
               <div
@@ -190,17 +225,26 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
                 style={{ ...glassLight, insetInline: "0.75rem", color: INK }}
               >
                 <span className="flex min-w-0 flex-col text-start">
-                  <span className="truncate text-[10px] font-extrabold uppercase tracking-wider" style={{ color: CAMEL }}>
+                  <span
+                    className="truncate text-[10px] font-extrabold uppercase tracking-wider"
+                    style={{ color: CAMEL }}
+                  >
                     {p.brands?.name ?? ""}
                   </span>
-                  <span className="truncate text-[13px] font-bold leading-tight">{lang === "ar" ? p.name_ar : p.name_en}</span>
+                  <span className="truncate text-[13px] font-bold leading-tight">
+                    {lang === "ar" ? p.name_ar : p.name_en}
+                  </span>
                 </span>
                 <span className="flex shrink-0 flex-col items-end">
                   <span className="text-[13px] font-extrabold">
-                    {Number(p.price).toFixed(2)} <span className="text-[10px]">{c.unit}</span>
+                    {Number(p.price).toFixed(2)}{" "}
+                    <span className="text-[10px]">{c.unit}</span>
                   </span>
                   {p.was_price ? (
-                    <span className="text-[10px] font-bold line-through" style={{ color: "rgba(20,20,20,0.5)" }}>
+                    <span
+                      className="text-[10px] font-bold line-through"
+                      style={{ color: "rgba(20,20,20,0.5)" }}
+                    >
                       {Number(p.was_price).toFixed(2)}
                     </span>
                   ) : null}
@@ -233,11 +277,17 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
             className="flex w-[258px] shrink-0 snap-start flex-col items-center justify-center gap-2 rounded-[26px] text-[14px] font-bold md:w-[288px]"
             style={{ ...glassLight, color: INK, aspectRatio: "3 / 4" }}
           >
-            <ArrowUpRight size={22} style={{ color: CAMEL, transform: isAr ? "scaleX(-1)" : "none" }} />
+            <ArrowUpRight
+              size={22}
+              style={{ color: CAMEL, transform: isAr ? "scaleX(-1)" : "none" }}
+            />
             {c.viewAll}
           </Link>
         ) : (
-          <p className="py-16 text-[14px] font-bold" style={{ color: "rgba(20,20,20,0.7)" }}>
+          <p
+            className="py-16 text-[14px] font-bold"
+            style={{ color: "rgba(20,20,20,0.7)" }}
+          >
             {c.empty}
           </p>
         )}
