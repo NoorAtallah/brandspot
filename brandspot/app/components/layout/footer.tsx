@@ -184,14 +184,6 @@ export default function Footer({ brands = [] }: { brands?: FooterBrand[] }) {
           <span>
             © {year} brand.spot — {c.rights}
           </span>
-          <span className="flex items-center gap-4">
-            <Link href="/terms" className="hover:underline" style={{ textUnderlineOffset: "3px" }}>
-              {c.terms}
-            </Link>
-            <Link href="/privacy" className="hover:underline" style={{ textUnderlineOffset: "3px" }}>
-              {c.privacy}
-            </Link>
-          </span>
         </div>
       </motion.div>
     </footer>
