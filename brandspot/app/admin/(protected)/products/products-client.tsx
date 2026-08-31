@@ -34,8 +34,28 @@ const blank = {
   brand_id: "", category_id: "", dept: "women" as Product["dept"], price: "", was_price: "", stock: "0", active: true,
 };
 
+// Keeps letters/digits from ANY script (Arabic included) so an Arabic-only
+// name still produces a usable slug instead of an empty string.
 const slugify = (s: string) =>
-  s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").slice(0, 60);
+  s
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 60);
+
+/** A slug that is never empty and never collides with an existing product. */
+const uniqueSlug = (base: string, taken: Set<string>) => {
+  const root = slugify(base) || `product-${Date.now().toString(36)}`;
+  if (!taken.has(root)) return root;
+  let n = 2;
+  while (taken.has(`${root}-${n}`)) n += 1;
+  return `${root}-${n}`;
+};
 
 export default function ProductsClient({
   products, brands, categories,
@@ -88,7 +108,10 @@ export default function ProductsClient({
     setError(null);
 
     const values = {
-      slug: form.slug || slugify(form.name_en || form.name_ar),
+      slug: uniqueSlug(
+        form.slug || form.name_en || form.name_ar,
+        new Set(products.filter((p) => p.id !== editing?.id).map((p) => p.slug)),
+      ),
       name_ar: form.name_ar,
       name_en: form.name_en,
       description_ar: form.description_ar || null,
@@ -212,7 +235,12 @@ export default function ProductsClient({
           </div>
 
           <Field label="Slug (leave blank to generate)">
-            <Input value={form.slug} onChange={(e) => set("slug", e.target.value)} placeholder={slugify(form.name_en)} />
+            <Input
+              value={form.slug}
+              onChange={(e) => set("slug", e.target.value)}
+              onBlur={(e) => set("slug", slugify(e.target.value))}
+              placeholder={slugify(form.name_en)}
+            />
           </Field>
 
           <div className="grid gap-3 sm:grid-cols-2">

@@ -191,7 +191,7 @@ export default function ProductDetailView({ product, related }: { product: Detai
             {related.map((r) => (
               <Link
                 key={r.id}
-                href={`/product/${r.slug}`}
+                href={`/product/${encodeURIComponent(r.slug)}`}
                 className="group w-[220px] shrink-0"
               >
                 <div className="relative aspect-[3/4] overflow-hidden rounded-[24px]"

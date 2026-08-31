@@ -28,7 +28,7 @@ export default function ProductCard({ product: p, index = 0 }: { product: Produc
       className="group flex flex-col"
     >
       <Link
-        href={`/product/${p.slug}`}
+        href={`/product/${encodeURIComponent(p.slug)}`}
         className="relative block aspect-[3/4] overflow-hidden rounded-[26px]"
         style={{ border: "1px solid rgba(20,20,20,0.06)", boxShadow: "0 22px 44px -30px rgba(20,20,20,0.6)", background: "rgba(20,20,20,0.05)" }}
       >

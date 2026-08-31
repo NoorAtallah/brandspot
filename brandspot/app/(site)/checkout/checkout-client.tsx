@@ -55,6 +55,9 @@ const inputStyle: React.CSSProperties = {
   color: INK,
 };
 
+// Flat delivery fee (JD) for every city.
+const DELIVERY_FEE = 2;
+
 export default function CheckoutClient({ zones }: { zones: Zone[] }) {
   const { lines, subtotal, clear } = useCart();
   const { lang, isAr } = useLang();
@@ -69,7 +72,7 @@ export default function CheckoutClient({ zones }: { zones: Zone[] }) {
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
   const zone = zones.find((z) => (isAr ? z.city_ar : z.city_en) === form.city);
-  const fee = Number(zone?.fee ?? 0);
+  const fee = zone?.fee ?? DELIVERY_FEE;
   const total = subtotal + fee;
 
   const submit = async (e: React.FormEvent) => {
@@ -136,7 +139,7 @@ export default function CheckoutClient({ zones }: { zones: Zone[] }) {
               <option value="">{c.pick}</option>
               {zones.map((z) => (
                 <option key={z.id} value={isAr ? z.city_ar : z.city_en}>
-                  {isAr ? z.city_ar : z.city_en} — {Number(z.fee) === 0 ? c.free : `${Number(z.fee).toFixed(2)} ${c.unit}`}
+                  {isAr ? z.city_ar : z.city_en} — {`${DELIVERY_FEE.toFixed(2)} ${c.unit}`}
                 </option>
               ))}
             </select>

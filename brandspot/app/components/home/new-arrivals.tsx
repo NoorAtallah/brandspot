@@ -180,7 +180,7 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
             className="group relative w-[258px] shrink-0 snap-start md:w-[288px]"
           >
             <Link
-              href={`/product/${p.slug}`}
+              href={`/product/${encodeURIComponent(p.slug)}`}
               className="relative block aspect-[3/4] overflow-hidden rounded-[26px]"
               style={{
                 border: "1px solid rgba(20,20,20,0.06)",

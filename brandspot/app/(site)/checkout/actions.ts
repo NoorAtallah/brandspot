@@ -81,15 +81,8 @@ export async function placeOrder(payload: OrderPayload) {
     });
   }
 
-  // Delivery is priced by city, matched against the zones table in either language.
-  const { data: zone } = await db
-    .from("delivery_zones")
-    .select("fee")
-    .or(`city_en.eq.${city},city_ar.eq.${city}`)
-    .eq("active", true)
-    .maybeSingle();
-
-  const delivery_fee = Number(zone?.fee ?? 0);
+  // Flat delivery fee (JD) for every city.
+  const delivery_fee = 2;
   const total = subtotal + delivery_fee;
 
   const { data: order, error: insertErr } = await db
