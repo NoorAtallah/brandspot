@@ -16,13 +16,29 @@ type Row = { size: string; stock: number };
 const SIZE_PRESETS: Record<"women" | "men" | "kids", string[]> = {
   women: ["XS", "S", "M", "L", "XL", "XXL"],
   men: ["S", "M", "L", "XL", "XXL"],
-  // Months stay as ranges; years are single ages (1Y, 2Y, ...) — no ranges.
+  // Both styles available: single ages (1Y, 2Y, ...) and the classic ranges.
   kids: [
     "0-3M", "3-6M", "6-9M", "9-12M", "12-18M", "18-24M",
-    "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y",
-    "9Y", "10Y", "11Y", "12Y", "13Y", "14Y",
+    "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y",
+    "8Y", "9Y", "10Y", "11Y", "12Y", "13Y", "14Y",
+    "2-3Y", "3-4Y", "4-5Y", "5-6Y", "6-7Y", "7-8Y", "8-9Y", "9-10Y",
+    "10-11Y", "11-12Y", "12-13Y", "13-14Y", "14-15Y",
   ],
 };
+/* Footwear is numbered, not lettered: kids EU 20-35, women/men EU 36-45. */
+const range = (from: number, to: number) =>
+  Array.from({ length: to - from + 1 }, (_, i) => String(from + i));
+
+const SHOE_PRESETS: Record<"women" | "men" | "kids", string[]> = {
+  women: range(36, 45),
+  men: range(36, 45),
+  kids: range(20, 35),
+};
+
+/** True when the picked category is a shoes/footwear one, in EN or AR. */
+const isShoeCategory = (name?: string) =>
+  !!name && /(shoe|footwear|sneaker|boot|sandal|حذاء|أحذية|احذية|صنادل|بوت)/i.test(name);
+
 type Product = {
   id: string; slug: string; name_ar: string; name_en: string;
   description_ar: string | null; description_en: string | null;
@@ -79,6 +95,10 @@ export default function ProductsClient({
   const [error, setError] = React.useState<string | null>(null);
 
   const set = (k: keyof typeof blank, v: string | boolean) => setForm((f) => ({ ...f, [k]: v }));
+
+  // Shoe products get numbered EU sizes instead of XS/S/M or ages.
+  const shoes = isShoeCategory(categories.find((c) => c.id === form.category_id)?.name_en);
+  const presets = shoes ? SHOE_PRESETS[form.dept] : SIZE_PRESETS[form.dept];
 
   const startNew = () => {
     setEditing(null);
@@ -275,10 +295,10 @@ export default function ProductsClient({
             <Field label="Was (JD)"><Input type="number" step="0.01" value={form.was_price} onChange={(e) => set("was_price", e.target.value)} /></Field>
           </div>
 
-          <Field label={form.dept === "kids" ? "Ages" : "Sizes"}>
+          <Field label={shoes ? "Shoe sizes (EU)" : form.dept === "kids" ? "Ages" : "Sizes"}>
             <div className="flex flex-col gap-2.5">
               <div className="flex flex-wrap gap-1.5">
-                {SIZE_PRESETS[form.dept].map((size) => {
+                {presets.map((size) => {
                   const on = variants.some((v) => v.size === size);
                   return (
                     <button
@@ -319,7 +339,7 @@ export default function ProductsClient({
               ) : (
                 <>
                   <p className="text-[12px] font-bold" style={{ color: muted }}>
-                    No {form.dept === "kids" ? "ages" : "sizes"} picked — the piece sells as one option.
+                    No {shoes ? "shoe sizes" : form.dept === "kids" ? "ages" : "sizes"} picked — the piece sells as one option.
                   </p>
                   <Input type="number" value={form.stock} onChange={(e) => set("stock", e.target.value)} placeholder="Stock" />
                 </>
