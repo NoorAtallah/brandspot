@@ -16,7 +16,12 @@ type Row = { size: string; stock: number };
 const SIZE_PRESETS: Record<"women" | "men" | "kids", string[]> = {
   women: ["XS", "S", "M", "L", "XL", "XXL"],
   men: ["S", "M", "L", "XL", "XXL"],
-  kids: ["0-3M", "3-6M", "6-9M", "9-12M", "12-18M", "18-24M", "2-3Y", "3-4Y", "4-5Y", "5-6Y", "6-7Y", "7-8Y", "8-9Y", "9-10Y", "10-11Y", "11-12Y", "12-13Y", "13-14Y", "14-15Y"],
+  // Months stay as ranges; years are single ages (1Y, 2Y, ...) — no ranges.
+  kids: [
+    "0-3M", "3-6M", "6-9M", "9-12M", "12-18M", "18-24M",
+    "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y",
+    "9Y", "10Y", "11Y", "12Y", "13Y", "14Y",
+  ],
 };
 type Product = {
   id: string; slug: string; name_ar: string; name_en: string;

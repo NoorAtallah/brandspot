@@ -3,7 +3,7 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { LayoutGrid, Shirt, FolderTree, Tag, Sparkles, Receipt, LogOut, ExternalLink, type LucideIcon } from "lucide-react";
+import { LayoutGrid, Shirt, FolderTree, Tag, Sparkles, Receipt, BadgeDollarSign, LogOut, ExternalLink, type LucideIcon } from "lucide-react";
 import { createClient } from "../lib/supabase/client";
 import { glassLight, CAMEL, INK } from "../lib/glass";
 
@@ -13,6 +13,7 @@ const NAV: { href: string; label: string; Icon: LucideIcon }[] = [
   { href: "/admin/categories", label: "Categories", Icon: FolderTree },
   { href: "/admin/brands", label: "Brands", Icon: Tag },
   { href: "/admin/looks", label: "Looks", Icon: Sparkles },
+  { href: "/admin/pricing", label: "Pricing", Icon: BadgeDollarSign },
   { href: "/admin/orders", label: "Orders", Icon: Receipt },
 ];
 
