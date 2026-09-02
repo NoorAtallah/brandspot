@@ -12,6 +12,8 @@ import { placeOrder } from "./actions";
 
 type Zone = { id: string; city_ar: string; city_en: string; fee: number; eta_ar: string | null; eta_en: string | null };
 
+const DELIVERY_FEE = 2;
+
 const COPY = {
   ar: {
     title: "إتمام الطلب", subtitle: "الدفع عند الاستلام — بدون بطاقة وبدون حساب.",
@@ -55,9 +57,6 @@ const inputStyle: React.CSSProperties = {
   color: INK,
 };
 
-// Flat delivery fee (JD) for every city.
-const DELIVERY_FEE = 2;
-
 export default function CheckoutClient({ zones }: { zones: Zone[] }) {
   const { lines, subtotal, clear } = useCart();
   const { lang, isAr } = useLang();
@@ -71,9 +70,11 @@ export default function CheckoutClient({ zones }: { zones: Zone[] }) {
 
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
+  // Flat delivery fee (JD) for every city. No city picked yet means no fee to
+  // add — the total must not quietly assume one.
   const zone = zones.find((z) => (isAr ? z.city_ar : z.city_en) === form.city);
-  const fee = zone?.fee ?? DELIVERY_FEE;
-  const total = subtotal + fee;
+  const fee = zone ? DELIVERY_FEE : null;
+  const total = subtotal + (fee ?? 0);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -215,7 +216,7 @@ export default function CheckoutClient({ zones }: { zones: Zone[] }) {
             <div className="flex justify-between"><dt>{c.subtotal}</dt><dd>{subtotal.toFixed(2)}</dd></div>
             <div className="flex justify-between">
               <dt>{c.delivery}</dt>
-              <dd>{form.city ? (fee === 0 ? c.free : fee.toFixed(2)) : "—"}</dd>
+              <dd>{fee === null ? "—" : fee === 0 ? c.free : fee.toFixed(2)}</dd>
             </div>
             <div className="mt-1 flex justify-between text-[18px] font-extrabold" style={{ color: INK }}>
               <dt>{c.total}</dt><dd>{total.toFixed(2)} <span className="text-[11px]">{c.unit}</span></dd>

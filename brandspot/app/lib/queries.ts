@@ -117,11 +117,12 @@ const LIST_SELECT =
 export async function getProducts(filters: ProductFilters = {}): Promise<ProductRow[]> {
   const supabase = await createClient();
 
-  // brands!inner would drop brandless products, so only join strictly when
-  // filtering by brand.
-  const select = filters.brand
-    ? LIST_SELECT
-    : LIST_SELECT.replace("brands!inner", "brands");
+  // An !inner join drops products with no brand / no category, so join
+  // strictly only while that filter is on. Without !inner the .eq() below
+  // filters the embedded row instead of the product list, which is why an
+  // outer-joined filter silently returns everything.
+  let select = filters.brand ? LIST_SELECT : LIST_SELECT.replace("brands!inner", "brands");
+  if (filters.category) select = select.replace("categories(slug)", "categories!inner(slug)");
 
   let query = supabase.from("products").select(select).eq("active", true);
 
