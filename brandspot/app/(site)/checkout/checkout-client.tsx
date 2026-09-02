@@ -12,7 +12,7 @@ import { placeOrder } from "./actions";
 
 type Zone = { id: string; city_ar: string; city_en: string; fee: number; eta_ar: string | null; eta_en: string | null };
 
-const DELIVERY_FEE = 2;
+const DELIVERY_FEE: number = 2;
 
 const COPY = {
   ar: {
