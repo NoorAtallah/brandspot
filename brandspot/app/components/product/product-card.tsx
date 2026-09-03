@@ -6,7 +6,6 @@ import { ImageOff } from "lucide-react";
 import type { ProductRow } from "../../lib/queries";
 import { useLang } from "../../lib/i18n";
 import { glassLight, CAMEL, INK } from "../../lib/glass";
-import ProductActions from "../cart/product-actions";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -79,23 +78,6 @@ export default function ProductCard({ product: p, index = 0 }: { product: Produc
           </span>
         </div>
       </Link>
-
-      <div className="mt-3 flex justify-center">
-        <ProductActions
-          dept={p.dept}
-          stock={p.stock}
-          variants={p.product_variants ?? []}
-          line={{
-            productId: p.id,
-            slug: p.slug,
-            name_ar: p.name_ar,
-            name_en: p.name_en,
-            brand: p.brands?.name ?? null,
-            price: Number(p.price),
-            image: cover,
-          }}
-        />
-      </div>
     </motion.article>
   );
 }

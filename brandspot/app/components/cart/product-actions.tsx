@@ -31,7 +31,11 @@ export default function ProductActions({
   const c = COPY[lang];
   const isKids = dept === "kids";
 
-  const sorted = [...(variants ?? [])].sort((a, b) => a.sort_order - b.sort_order);
+  // Only sizes actually in stock are offered — sold-out ones are hidden
+  // rather than shown struck through.
+  const sorted = [...(variants ?? [])]
+    .filter((v) => v.stock > 0)
+    .sort((a, b) => a.sort_order - b.sort_order);
   const [size, setSize] = React.useState<string | null>(null);
 
   if (!sorted.length) {
@@ -48,21 +52,18 @@ export default function ProductActions({
 
       <div className="flex flex-wrap justify-center gap-1.5">
         {sorted.map((v) => {
-          const soldOut = v.stock <= 0;
           const on = size === v.size;
           return (
             <motion.button
               key={v.id}
               onClick={() => setSize(on ? null : v.size)}
-              disabled={soldOut}
-              whileTap={reduce || soldOut ? {} : { scale: 0.94 }}
+              whileTap={reduce ? {} : { scale: 0.94 }}
               aria-pressed={on}
-              className="rounded-full px-2.5 py-1 text-[11.5px] font-extrabold disabled:opacity-40"
+              className="rounded-full px-2.5 py-1 text-[11.5px] font-extrabold"
               style={{
                 background: on ? CAMEL : "rgba(255,255,255,0.75)",
                 color: INK,
                 border: `1px solid ${on ? CAMEL : "rgba(20,20,20,0.12)"}`,
-                textDecoration: soldOut ? "line-through" : "none",
               }}
             >
               {v.size}

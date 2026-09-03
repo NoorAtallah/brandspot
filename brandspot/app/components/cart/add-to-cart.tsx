@@ -7,8 +7,8 @@ import { useLang } from "../../lib/i18n";
 import { CAMEL, INK } from "../../lib/glass";
 
 const COPY = {
-  ar: { add: "أضف للحقيبة", added: "تمت الإضافة", out: "غير متوفر" },
-  en: { add: "Add to bag", added: "Added", out: "Out of stock" },
+  ar: { add: "أضف للحقيبة", added: "تمت الإضافة" },
+  en: { add: "Add to bag", added: "Added" },
 } as const;
 
 export default function AddToCart({
@@ -44,7 +44,7 @@ export default function AddToCart({
       }`}
       style={{ background: soldOut ? "rgba(20,20,20,0.12)" : done ? INK : CAMEL, color: done ? "#fff" : INK }}
     >
-      {soldOut ? c.out : done ? <><Check size={15} strokeWidth={3} /> {c.added}</> : <><ShoppingBag size={15} strokeWidth={2.4} /> {label ?? c.add}</>}
+      {done ? <><Check size={15} strokeWidth={3} /> {c.added}</> : <><ShoppingBag size={15} strokeWidth={2.4} /> {label ?? c.add}</>}
     </motion.button>
   );
 }

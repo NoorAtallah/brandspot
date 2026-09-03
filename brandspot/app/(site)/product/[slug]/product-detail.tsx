@@ -11,12 +11,12 @@ import ProductActions from "../../../components/cart/product-actions";
 
 const COPY = {
   ar: {
-    unit: "د.أ", off: "خصم", sold: "غير متوفر حالياً", left: "بقي القليل",
+    unit: "د.أ", off: "خصم",
     details: "تفاصيل القطعة", related: "قطع مشابهة", home: "الرئيسية",
     cod: "الدفع عند الاستلام", delivery: "توصيل لكل الأردن", returns: "إرجاع خلال ١٤ يوم",
   },
   en: {
-    unit: "JD", off: "off", sold: "Out of stock", left: "Only a few left",
+    unit: "JD", off: "off",
     details: "Details", related: "You may also like", home: "Home",
     cod: "Cash on delivery", delivery: "Delivery across Jordan", returns: "14-day returns",
   },
@@ -36,7 +36,6 @@ export default function ProductDetailView({ product, related }: { product: Detai
   const description = isAr ? product.description_ar : product.description_en;
   const price = Number(product.price);
   const was = product.was_price ? Number(product.was_price) : null;
-  const soldOut = product.stock <= 0;
   const cover = (p: ProductRow) => [...p.product_images].sort((a, b) => a.sort_order - b.sort_order)[0]?.url ?? null;
 
   return (
@@ -126,16 +125,6 @@ export default function ProductDetailView({ product, related }: { product: Detai
           {product.categories ? (
             <p className="mt-2 text-[12.5px] font-bold" style={{ color: "rgba(20,20,20,0.6)" }}>
               {isAr ? product.categories.name_ar : product.categories.name_en}
-            </p>
-          ) : null}
-
-          {soldOut ? (
-            <p className="mt-4 inline-flex rounded-full px-4 py-2 text-[12.5px] font-extrabold" style={{ background: "rgba(20,20,20,0.10)", color: INK }}>
-              {c.sold}
-            </p>
-          ) : product.stock <= 3 ? (
-            <p className="mt-4 inline-flex rounded-full px-4 py-2 text-[12.5px] font-extrabold" style={{ background: "rgba(199,167,129,0.25)", color: INK }}>
-              {c.left}
             </p>
           ) : null}
 

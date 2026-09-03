@@ -6,7 +6,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
 import { glassLight, CAMEL, INK } from "../../lib/glass";
 import { useLang } from "../../lib/i18n";
-import ProductActions from "../cart/product-actions";
 
 import type { ProductRow } from "../../lib/queries";
 
@@ -251,23 +250,6 @@ export default function NewArrivals({ products }: { products: ProductRow[] }) {
                 </span>
               </div>
             </Link>
-
-            <div className="mt-3 flex justify-center">
-              <ProductActions
-                dept={p.dept}
-                stock={p.stock}
-                variants={p.product_variants ?? []}
-                line={{
-                  productId: p.id,
-                  slug: p.slug,
-                  name_ar: p.name_ar,
-                  name_en: p.name_en,
-                  brand: p.brands?.name ?? null,
-                  price: Number(p.price),
-                  image: cover(p),
-                }}
-              />
-            </div>
           </motion.article>
         ))}
 
